@@ -22,11 +22,6 @@ object ChatService {
         } ?: false
     }
 
-    //    метод получения списка всех чатов
-    fun getAllChats(): List<Chat> {
-        return chats
-    }
-
     //    метод получения списка неудаленных чатов
     fun getNotDeletedChats(): List<Chat> {
         return chats.filter { !it.isDeleted }
@@ -65,14 +60,19 @@ object ChatService {
         return messages.filter { it.cid == cid && !it.isDeleted && !it.isRead }
     }
 
-    //    получение последних сообщений из чата
-    fun getLastMessages(cid: Int, count: Int): List<Message> {
-        return messages.filter { !it.isDeleted && it.cid == cid }.takeLast(count)
+    //    получение последних сообщений из чатов текущего пользователя
+    fun getLastMessages(receiverId: Int): List<String> {
+        return messages.filter { it.receiverId == receiverId && !it.isDeleted }
+            .groupBy { it.cid }
+            .values
+            .map { it.lastOrNull()?.text ?: "нет сообщений" }
     }
 
-    //    получение списка сообщений из чата по id собеседника
-    fun getMessagesFromUser(uid: Int, count: Int): List<Message> {
-        val result = messages.filter { !it.isDeleted && it.senderId == uid }.takeLast(count)
+    //    получение списка сообщений из чата по id собеседника для текущего пользователя
+    fun getMessagesFromUser(receiverId: Int, senderId: Int, count: Int): List<Message> {
+        val result = messages.filter {
+           it.receiverId == receiverId && it.senderId == senderId &&  !it.isDeleted
+        }.takeLast(count)
         result.forEach { setMessageIsRead(it.id) }
         return result
     }
@@ -85,9 +85,9 @@ object ChatService {
     }
 
     // метод изменения сообщения
-    fun updateMessage(message: Message): Boolean {
-        return messages.find { it.id == message.id && !it.isDeleted }?.let { findMessage ->
-            messages[messages.indexOf(findMessage)] = message.copy()
+    fun updateMessage(id: Int, text: String): Boolean {
+        return messages.find { it.id == id && !it.isDeleted }?.let { findMessage ->
+            messages[messages.indexOf(findMessage)] = findMessage.copy(text = text)
             true
         } ?: false
     }
