@@ -26,18 +26,31 @@ class ChatServiceTest {
 
     }
 
-// тест проверки метода получения количества чатов с непрочитанными сообщениями
+    // тест проверки метода получения количества чатов с непрочитанными сообщениями
     @Test
-    fun getUnreadChatsCount(){
+    fun getUnreadChatsCount() {
         service.addMessage(Message(receiverId = 2, senderId = 1, text = "Сообщение 12"))
         val message2 = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 21"))
         val message3 = service.addMessage(Message(receiverId = 3, senderId = 1, text = "Сообщение 31"))
 
-        assertEquals(2,service.getUnreadChatsCount())
+        assertEquals(2, service.getUnreadChatsCount())
 
         service.setMessageIsRead(message3.id)
         service.deleteMessage(message2.id)
-        assertEquals(1,service.getUnreadChatsCount())
+        assertEquals(1, service.getUnreadChatsCount())
+    }
+
+
+    //    тест для проверки метода получения неудаленных чатов
+    @Test
+    fun getNotDeletedChats() {
+        service.addMessage(Message(receiverId = 2, senderId = 1, text = "Сообщение 12"))
+        val message2 = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 21"))
+        service.addMessage(Message(receiverId = 3, senderId = 1, text = "Сообщение 31"))
+
+        service.deleteChat(message2.cid)
+
+        assertEquals(1, service.getNotDeletedChats().size)
     }
 
 
