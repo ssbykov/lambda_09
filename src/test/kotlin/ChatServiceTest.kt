@@ -47,6 +47,19 @@ class ChatServiceTest {
         assertFalse(result)
     }
 
+    //    тест для метода получения непрочитанных сообщений из чаата
+    @Test
+    fun getUnreadMessages() {
+        val message1 = service.addMessage(Message(receiverId = 2, senderId = 1, text = "Сообщение 12"))
+        val message2 = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 21"))
+        val message3 = service.addMessage(Message(receiverId = 3, senderId = 1, text = "Сообщение 31"))
+
+        service.deleteMessage(message1.id)
+        service.setMessageIsRead(message3.id)
+        val result = service.getUnreadMessages(message1.cid)
+        assertEquals(listOf(message2), result)
+    }
+
     //    тест проверки метода получения последних сообщений из чатов пользователя
     @Test
     fun getLastMessages() {
