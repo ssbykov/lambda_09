@@ -48,6 +48,7 @@ class ChatServiceTest {
         assertFalse(result)
     }
 
+//    тест проверки метода получения последних сообщений из чатов пользователя
     @Test
     fun getLastMessages(){
         val message1 = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 1"))
@@ -60,6 +61,24 @@ class ChatServiceTest {
 
         assertEquals(listOf("Сообщение 2", "нет сообщений"), result)
     }
+
+//    тест проверки метода получения всех сообщений из чата для текущего пользователя
+    @Test
+    fun getMessagesFromUser(){
+    val message1 = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 1"))
+    val message2 = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 2"))
+    val message3 = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 3"))
+
+    val result1 = service.getMessagesFromUser(1, 2, 2)
+
+    assertEquals(listOf(message2, message3), result1)
+    val result2 = service.getMessagesFromUser(1, 2, 2)
+
+    assertTrue(result2[0].isRead)
+    assertTrue(result2[1].isRead)
+
+    }
+
 
     fun createMessages(chatCount: Int, messageCount: Int) {
         (1..chatCount).forEach { chat ->
