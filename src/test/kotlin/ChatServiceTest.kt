@@ -112,17 +112,25 @@ class ChatServiceTest {
         assertFalse(result)
     }
 
-    fun createMessages(chatCount: Int, messageCount: Int) {
-        (1..chatCount).forEach { chat ->
-            (1..messageCount).forEach { message ->
-                service.addMessage(
-                    Message(
-                        receiverId = chat,
-                        senderId = chatCount + 1,
-                        text = "Сообщение от id${chatCount + 1}, для id${chat}"
-                    )
-                )
-            }
-        }
+    //    тест для успешного изменения сообщения
+    @Test
+    fun updateMessageIsTrue() {
+        val message = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 1"))
+
+        val result = service.updateMessage(message.id, "Сообщение изменено")
+
+        assertTrue(result)
     }
+
+    //    тест для неуспешного изменения сообщения
+    @Test
+    fun updateMessageIsFalse() {
+        val message = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 1"))
+
+        val result = service.updateMessage(message.id + 1, "Сообщение изменено")
+
+        assertFalse(result)
+    }
+
+
 }
