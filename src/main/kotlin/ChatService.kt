@@ -71,12 +71,13 @@ object ChatService {
     //    получение списка сообщений из чата по id собеседника для текущего пользователя
     fun getMessagesFromUser(receiverId: Int, senderId: Int, count: Int): List<Message> {
         val result = messages.filter {
-           it.receiverId == receiverId && it.senderId == senderId &&  !it.isDeleted
+            it.receiverId == receiverId && it.senderId == senderId && !it.isDeleted
         }.takeLast(count)
         result.forEach { setMessageIsRead(it.id) }
         return result
     }
 
+    //    метод смены статуса сообщения на прочитанное
     fun setMessageIsRead(id: Int): Boolean {
         return messages.find { it.id == id && !it.isDeleted }?.let { findMessage ->
             messages[messages.indexOf(findMessage)] = findMessage.copy(isRead = true)
