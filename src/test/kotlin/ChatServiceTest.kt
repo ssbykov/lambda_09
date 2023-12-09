@@ -48,6 +48,18 @@ class ChatServiceTest {
         assertFalse(result)
     }
 
+    @Test
+    fun getLastMessages(){
+        val message1 = service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 1"))
+        service.addMessage(Message(receiverId = 1, senderId = 2, text = "Сообщение 2"))
+
+        val message2 = service.addMessage(Message(receiverId = 1, senderId = 3, text = "Сообщение 3"))
+        service.deleteMessage(message2.id)
+
+        val result = service.getLastMessages(message1.receiverId)
+
+        assertEquals(listOf("Сообщение 2", "нет сообщений"), result)
+    }
 
     fun createMessages(chatCount: Int, messageCount: Int) {
         (1..chatCount).forEach { chat ->

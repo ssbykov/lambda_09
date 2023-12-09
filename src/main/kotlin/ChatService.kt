@@ -62,10 +62,13 @@ object ChatService {
 
     //    получение последних сообщений из чатов текущего пользователя
     fun getLastMessages(receiverId: Int): List<String> {
-        return messages.filter { it.receiverId == receiverId && !it.isDeleted }
+        return messages.filter { it.receiverId == receiverId}
             .groupBy { it.cid }
             .values
-            .map { it.lastOrNull()?.text ?: "нет сообщений" }
+            .map {
+                val notDeletedMessages = it.filter { message: Message ->  !message.isDeleted}
+                notDeletedMessages.lastOrNull()?.text ?: "нет сообщений"
+            }
     }
 
     //    получение списка сообщений из чата по id собеседника для текущего пользователя
