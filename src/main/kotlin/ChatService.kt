@@ -76,7 +76,7 @@ object ChatService {
         val result = messages.filter {
             it.receiverId == receiverId && it.senderId == senderId && !it.isDeleted
         }.takeLast(count)
-        result.forEach { setMessageIsRead(it.id) }
+        .onEach { setMessageIsRead(it.id) }
         return result
     }
 
