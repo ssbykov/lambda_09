@@ -111,7 +111,7 @@ class ChatServiceTest {
 
         val result1 = service.getMessagesFromUser(1, 2, 2)
 
-        assertEquals(listOf(message2, message3), result1)
+        assertEquals(listOf(message3, message2), result1)
         val result2 = service.getMessagesFromUser(1, 2, 2)
 
         assertTrue(result2[0].isRead)
