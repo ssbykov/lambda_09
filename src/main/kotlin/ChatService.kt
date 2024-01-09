@@ -74,6 +74,7 @@ object ChatService {
     //    получение списка сообщений из чата по id собеседника для текущего пользователя
     fun getMessagesFromUser(receiverId: Int, senderId: Int, count: Int): List<Message> {
         val result = messages.asReversed()
+            .asSequence()
             .filter {
                 it.receiverId == receiverId && it.senderId == senderId && !it.isDeleted
             }.take(count)
