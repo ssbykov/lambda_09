@@ -62,21 +62,23 @@ object ChatService {
 
     //    получение последних сообщений из чатов текущего пользователя
     fun getLastMessages(receiverId: Int): List<String> {
-        return messages.filter { it.receiverId == receiverId}
+        return messages.filter { it.receiverId == receiverId }
             .groupBy { it.cid }
             .values
             .map {
-                val notDeletedMessages = it.filter { message: Message ->  !message.isDeleted}
+                val notDeletedMessages = it.filter { message: Message -> !message.isDeleted }
                 notDeletedMessages.lastOrNull()?.text ?: "нет сообщений"
             }
     }
 
     //    получение списка сообщений из чата по id собеседника для текущего пользователя
     fun getMessagesFromUser(receiverId: Int, senderId: Int, count: Int): List<Message> {
-        val result = messages.filter {
-            it.receiverId == receiverId && it.senderId == senderId && !it.isDeleted
-        }.takeLast(count)
-        .onEach { setMessageIsRead(it.id) }
+        val result = messages.reversed().asSequence()
+            .filter {
+                it.receiverId == receiverId && it.senderId == senderId && !it.isDeleted
+            }.take(count)
+            .toList()
+            .onEach { setMessageIsRead(it.id) }
         return result
     }
 
